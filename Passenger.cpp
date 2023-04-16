@@ -37,9 +37,9 @@ void Passenger::load(RollerCoasterCar *car)
     {
         std::unique_lock<std::mutex> lock(_muLoad);
         _carAssigned = true;
+        _assignedCar = car;
     }
 
-    _assignedCar = car;
     _cvLoad.notify_all();
 }
 
