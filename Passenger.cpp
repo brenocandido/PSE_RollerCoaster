@@ -1,24 +1,86 @@
 #include "Passenger.h"
+#include "RollerCoasterCar.h"
+#include <iostream>
 
-Passenger::Passenger(int nRuns) :
-    _N_RUNS{nRuns}
-{
-    runCounter = 0;
+Passenger::Passenger(int id, std::queue<Passenger *> &queue, std::mutex &mu, std::condition_variable &cv, std::mutex &muTerminal) :
+    _ID{id},
+    _passengerQueue{queue},
+    _cvQueue{cv},
+    _muQueue{mu},
+    _muTerminal{muTerminal}
+{ 
+    _carAssigned = false;
 }
 
 void Passenger::thread()
 {
-    // board car
-    // unboard car
-    // increment run counter
+    while(true)
+    {
+        _joinPassengerQueue();
+
+        _waitCarAssigned();
+
+        _safePrint("Passenger " + std::to_string(_ID) + " boarding Car " + std::to_string(_assignedCar->id()));
+        _assignedCar->board();
+
+        _waitCarUnassigned();
+
+        _safePrint("Passenger " + std::to_string(_ID) + " unboarding Car " + std::to_string(_assignedCar->id()));
+        _assignedCar->unboard();
+
+        _assignedCar = nullptr;
+    }
 }
 
-void Passenger::board()
+void Passenger::load(RollerCoasterCar *car)
 {
-    // sets which car to board
+    {
+        std::unique_lock<std::mutex> lock(_muLoad);
+        _carAssigned = true;
+    }
+
+    _assignedCar = car;
+    _cvLoad.notify_all();
 }
 
-void Passenger::unboard()
+void Passenger::unload()
 {
-    // sets which car to unboard
+    {
+        std::unique_lock<std::mutex> lock(_muLoad);
+        _carAssigned = false;
+    }
+
+    _cvLoad.notify_all();
+}
+
+const int Passenger::id()
+{
+    return _ID;
+}
+
+void Passenger::_joinPassengerQueue()
+{
+    _safePrint("Passenger " + std::to_string(_ID) + " joined waiting queue!");
+
+    std::unique_lock<std::mutex> lock(_muQueue);
+    _passengerQueue.push(this);
+    _cvQueue.notify_all();
+}
+
+void Passenger::_waitCarAssigned()
+{
+    std::unique_lock<std::mutex> lock(_muLoad);
+    _cvLoad.wait(lock, [&](){return _carAssigned;});
+}
+
+void Passenger::_waitCarUnassigned()
+{
+    std::unique_lock<std::mutex> lock(_muLoad);
+    _cvLoad.wait(lock, [&](){return !_carAssigned;});
+}
+
+void Passenger::_safePrint(std::string msg)
+{
+    std::unique_lock<std::mutex> lock(_muTerminal);
+    std::cout << msg << std::endl;
 }
