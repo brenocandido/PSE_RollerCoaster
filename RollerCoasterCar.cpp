@@ -9,8 +9,8 @@ RollerCoasterCar::RollerCoasterCar( int id, int capacity, std::queue<Passenger *
     _ID{id},
     _CAPACITY{capacity},
     _passengerQueue{queue},
-    _muQueue{mu},
     _cvQueue{cv},
+    _muQueue{mu},
     _muTerminal{muTerminal}
 { 
     _riding = false;

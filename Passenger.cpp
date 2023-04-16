@@ -5,8 +5,8 @@
 Passenger::Passenger(int id, std::queue<Passenger *> &queue, std::mutex &mu, std::condition_variable &cv, std::mutex &muTerminal) :
     _ID{id},
     _passengerQueue{queue},
-    _cvQueue{cv},
     _muQueue{mu},
+    _cvQueue{cv},
     _muTerminal{muTerminal}
 { 
     _carAssigned = false;
