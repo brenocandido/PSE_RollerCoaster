@@ -111,7 +111,7 @@ void RollerCoasterCar::_run()
     std::uniform_real_distribution<double> uFunc(0, 1);
     int randTime = uFunc(_rng) * _BASE_RUN_TIME/2.0 + _BASE_RUN_TIME/2;
 
-    _safePrint("Car " + std::to_string(_ID) + " running!");
+    _safePrint("Car " + std::to_string(_ID) + " running for " + std::to_string(randTime) + " milliseconds!");
     std::this_thread::sleep_for(std::chrono::milliseconds(randTime));
     _safePrint("Car " + std::to_string(_ID) + " run finished!");
 } 
