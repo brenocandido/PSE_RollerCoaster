@@ -26,28 +26,13 @@ void RollerCoasterCar::thread()
 {
     while(true)
     {
-        while(_totalPassengers < _CAPACITY)
-        {
-            Passenger *pPass = _waitPassengerAvailable();
-            _carPassengers.push_back(pPass);
-            pPass->load(this);
-            _totalPassengers++;
-        }
-
+        _loadPassengers();
         _waitAllBoarded();
 
         _run();
 
-        for (auto &pPass : _carPassengers)
-        {
-            _safePrint("Car " + std::to_string(_ID) + " dropping Passenger " + std::to_string(pPass->id()));
-            pPass->unload();
-        }
-
-        _carPassengers.clear();
-
+        _unloadPassengers();
         _waitAllUnboarded();
-
 
         _safePrint("All passengers from Car " + std::to_string(_ID) + " unboarded!.");
         _totalPassengers = 0;
@@ -78,6 +63,28 @@ void RollerCoasterCar::unboard()
 const int RollerCoasterCar::id()
 {
     return _ID;
+}
+
+void RollerCoasterCar::_loadPassengers()
+{
+    while(_totalPassengers < _CAPACITY)
+    {
+        Passenger *pPass = _waitPassengerAvailable();
+        _carPassengers.push_back(pPass);
+        pPass->load(this);
+        _totalPassengers++;
+    }
+}
+
+void RollerCoasterCar::_unloadPassengers()
+{
+    for (auto &pPass : _carPassengers)
+    {
+        _safePrint("Car " + std::to_string(_ID) + " dropping Passenger " + std::to_string(pPass->id()));
+        pPass->unload();
+    }
+
+    _carPassengers.clear();
 }
 
 Passenger *RollerCoasterCar::_waitPassengerAvailable()

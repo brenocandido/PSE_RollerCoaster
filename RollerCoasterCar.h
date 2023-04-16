@@ -45,6 +45,8 @@ private:
 
     std::mt19937_64 _rng;
 
+    void _loadPassengers();
+    void _unloadPassengers();
     Passenger *_waitPassengerAvailable();
     void _run();
     void _waitAllBoarded();
