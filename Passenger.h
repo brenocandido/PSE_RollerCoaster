@@ -7,6 +7,7 @@
 #include <string>
 
 // Forward declaration
+// RollerCoasterCar file is included in .cpp only
 class RollerCoasterCar;
 
 class Passenger

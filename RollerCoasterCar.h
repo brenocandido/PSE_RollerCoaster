@@ -8,6 +8,7 @@
 #include <random>
 
 // Forward declaration
+// Passenger file is included in .cpp only
 class Passenger;
 
 class RollerCoasterCar {
