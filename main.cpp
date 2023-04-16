@@ -32,7 +32,7 @@ int main()
         threadPassengers.push_back(std::thread(&Passenger::thread, p));
     }
 
-    for (int i = 0; i < CAR_CAPACITY; i++)
+    for (int i = 0; i < N_CARS; i++)
     {
         RollerCoasterCar *car = new RollerCoasterCar(i, CAR_CAPACITY, passengerQueue, muQueue, cvQueue, muTerminal);
         threadCars.push_back(std::thread(&RollerCoasterCar::thread, car));
