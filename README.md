@@ -1,5 +1,6 @@
 # PSE_RollerCoaster
 
+This project intends to provide a solution to the Roller Coaster problem for multiple passengers and cars with multi-threading. This assumes each car has their own track, so all of them may run in parallel.
 
 To compile the code, execute:
 ```
