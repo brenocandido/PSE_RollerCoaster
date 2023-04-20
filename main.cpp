@@ -11,6 +11,7 @@
 #include "Passenger.h"
 
 void tryArguments(int argc, char *argv[], int &nPassengers, int &nCars, int &carCapacity);
+bool interpretArguments(const int argc, char *argv[], int *args, const int N_ARGS);
 
 int main(int argc, char *argv[])
 {
@@ -84,35 +85,8 @@ void tryArguments(int argc, char *argv[], int &nPassengers, int &nCars, int &car
     nCars = DEFAULT_N_CARS;
     carCapacity = DEFAULT_CAR_CAPACITY;
 
-    bool validArgs = false;
     int args[N_ARGS - 1] = {0, 0, 0};
-
-    if (argc == N_ARGS)
-    {
-        validArgs = true;
-
-        for (int i = 0; i < N_ARGS - 1; i++)
-        {
-            try
-            {
-                // Must skip "./main" arg
-                int arg = std::stoi(argv[i + 1]);
-
-                if (arg <= 0)
-                {
-                    validArgs = false;
-                    break;
-                }
-
-                args[i] = arg;
-            }
-            catch(const std::exception& e)
-            {
-                validArgs = false;
-                break;
-            }
-        }
-    }
+    bool validArgs = interpretArguments(argc, argv, args, N_ARGS);
 
     if (!validArgs)
     {
@@ -131,4 +105,30 @@ void tryArguments(int argc, char *argv[], int &nPassengers, int &nCars, int &car
 
     // Dummy sleep simply so the user can see what was configured.
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+}
+
+bool interpretArguments(const int argc, char *argv[], int *args, const int N_ARGS)
+{
+    if (argc != N_ARGS)
+        return false;
+
+    for (int i = 0; i < N_ARGS - 1; i++)
+    {
+        try
+        {
+            // Must skip "./main" arg
+            int arg = std::stoi(argv[i + 1]);
+
+            if (arg <= 0)
+                return false;
+
+            args[i] = arg;
+        }
+        catch(const std::exception& e)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
