@@ -7,9 +7,8 @@
 #include <vector>
 #include <random>
 
-// Forward declaration
-// Passenger file is included in .cpp only
-class Passenger;
+#include "Passenger.h"
+#include "BoardHandle.h"
 
 class RollerCoasterCar {
 public:
@@ -18,9 +17,6 @@ public:
 
     void thread();
 
-    void board();
-    void unboard();
-    
     const int id();
 
 private:
@@ -45,12 +41,12 @@ private:
 
     std::mt19937_64 _rng;
 
+    BoardHandle _boardHandle;
+
     void _loadPassengers();
     void _unloadPassengers();
     Passenger *_waitPassengerAvailable();
     void _run();
-    void _waitAllBoarded();
-    void _waitAllUnboarded();
 
     void _safePrint(std::string msg);
 };

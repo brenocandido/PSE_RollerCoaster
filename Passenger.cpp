@@ -1,9 +1,9 @@
 #include "Passenger.h"
-#include "RollerCoasterCar.h"
 #include <iostream>
 
 Passenger::Passenger(int id, std::queue<Passenger *> &queue, std::mutex &mu, std::condition_variable &cv, std::mutex &muTerminal) :
     _ID{id},
+    _boardHandle{nullptr},
     _passengerQueue{queue},
     _muQueue{mu},
     _cvQueue{cv},
@@ -20,24 +20,24 @@ void Passenger::thread()
 
         _waitCarAssigned();
 
-        _safePrint("Passenger " + std::to_string(_ID) + " boarding Car " + std::to_string(_assignedCar->id()));
-        _assignedCar->board();
+        _safePrint("Passenger " + std::to_string(_ID) + " boarding Car " + std::to_string(_boardHandle->carId()));
+        _boardHandle->board();
 
         _waitCarUnassigned();
 
-        _safePrint("Passenger " + std::to_string(_ID) + " unboarding Car " + std::to_string(_assignedCar->id()));
-        _assignedCar->unboard();
+        _safePrint("Passenger " + std::to_string(_ID) + " unboarding Car " + std::to_string(_boardHandle->carId()));
+        _boardHandle->unboard();
 
-        _assignedCar = nullptr;
+        _boardHandle = nullptr;
     }
 }
 
-void Passenger::load(RollerCoasterCar *car)
+void Passenger::load(BoardHandle *boardHandle)
 {
     {
         std::unique_lock<std::mutex> lock(_muLoad);
         _carAssigned = true;
-        _assignedCar = car;
+        _boardHandle = boardHandle;
     }
 
     _cvLoad.notify_all();

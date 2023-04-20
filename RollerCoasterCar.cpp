@@ -1,5 +1,4 @@
 #include "RollerCoasterCar.h"
-#include "Passenger.h"
 #include <chrono>
 #include <thread>
 #include <iostream>
@@ -11,7 +10,8 @@ RollerCoasterCar::RollerCoasterCar( int id, int capacity, std::queue<Passenger *
     _passengerQueue{queue},
     _cvQueue{cv},
     _muQueue{mu},
-    _muTerminal{muTerminal}
+    _muTerminal{muTerminal},
+    _boardHandle{id}
 { 
     _riding = false;
     _totalPassengers = 0;
@@ -27,37 +27,19 @@ void RollerCoasterCar::thread()
     while(true)
     {
         _loadPassengers();
-        _waitAllBoarded();
+        // _waitAllBoarded();
+        _boardHandle.waitAllBoarded(_totalPassengers);
 
         _run();
 
         _unloadPassengers();
-        _waitAllUnboarded();
+        _boardHandle.waitAllUnboarded();
+        // _waitAllUnboarded();
 
         _safePrint("All passengers from Car " + std::to_string(_ID) + " unboarded!.");
         _totalPassengers = 0;
     }
     
-}
-
-void RollerCoasterCar::board()
-{
-    {
-        std::unique_lock<std::mutex> lock(_muTotalBoarded);
-        _totalBoarded++;
-    }
-
-    _cvTotalBoarded.notify_all();
-}
-
-void RollerCoasterCar::unboard()
-{
-    {
-        std::unique_lock<std::mutex> lock(_muTotalBoarded);
-        _totalBoarded--;
-    }
-    
-    _cvTotalBoarded.notify_all();
 }
 
 const int RollerCoasterCar::id()
@@ -71,7 +53,7 @@ void RollerCoasterCar::_loadPassengers()
     {
         Passenger *pPass = _waitPassengerAvailable();
         _carPassengers.push_back(pPass);
-        pPass->load(this);
+        pPass->load(&this->_boardHandle);
         _totalPassengers++;
     }
 }
@@ -115,18 +97,6 @@ void RollerCoasterCar::_run()
     std::this_thread::sleep_for(std::chrono::milliseconds(randTime));
     _safePrint("Car " + std::to_string(_ID) + " run finished!");
 } 
-
-void RollerCoasterCar::_waitAllBoarded()
-{
-    std::unique_lock<std::mutex> lock(_muTotalBoarded);
-    _cvTotalBoarded.wait(lock, [&](){return (_totalBoarded == _totalPassengers);});
-}
-
-void RollerCoasterCar::_waitAllUnboarded()
-{
-    std::unique_lock<std::mutex> lock(_muTotalBoarded);
-    _cvTotalBoarded.wait(lock, [&](){return (_totalBoarded == 0);});
-}
 
 void RollerCoasterCar::_safePrint(std::string msg)
 {

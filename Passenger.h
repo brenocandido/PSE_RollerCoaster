@@ -6,9 +6,7 @@
 #include <condition_variable>
 #include <string>
 
-// Forward declaration
-// RollerCoasterCar file is included in .cpp only
-class RollerCoasterCar;
+#include "BoardHandle.h"
 
 class Passenger
 {
@@ -17,7 +15,7 @@ public:
 
     void thread();
 
-    void load(RollerCoasterCar *car);
+    void load(BoardHandle *boardHandle);
     void unload();
 
     const int id();
@@ -27,7 +25,7 @@ private:
     
     bool _carAssigned;
 
-    RollerCoasterCar *_assignedCar;
+    BoardHandle *_boardHandle;
 
     std::queue<Passenger *> &_passengerQueue;
     std::mutex &_muQueue;
