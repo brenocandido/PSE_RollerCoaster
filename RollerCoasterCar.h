@@ -22,7 +22,7 @@ public:
 private:
     const int _ID;
     const int _CAPACITY;
-    const int _BASE_RUN_TIME = 500;
+    const int _BASE_RUN_TIME = 5000;
 
     bool _riding;
     int _totalPassengers;

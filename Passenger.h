@@ -5,6 +5,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <string>
+#include <random>
 
 #include "BoardHandle.h"
 
@@ -22,6 +23,7 @@ public:
 
 private:
     const int _ID;
+    const int _BASE_BOARD_TIME = 2500;
     
     bool _carAssigned;
 
@@ -36,10 +38,16 @@ private:
 
     std::mutex &_muTerminal;
 
+    std::mt19937_64 _rng;
+
     void _joinPassengerQueue();
     void _waitCarAssigned();
     void _waitCarUnassigned();
+    void _board();
+    void _unboard();
     void _safePrint(std::string msg);
+
+    int _generateBoardTime();
 };
 
 #endif // PASSENGER_H_
