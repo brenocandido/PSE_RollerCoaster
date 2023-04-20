@@ -54,12 +54,14 @@ void RollerCoasterCar::_loadPassengers()
         int randTime = _generateRandomTime(_BASE_LOAD_TIME);
         Passenger *pPass = _waitPassengerAvailable();
 
-        _safePrint("Car " + std::to_string(_ID) + " loading Passenger " + std::to_string(pPass->id()));
+        std::string carId = std::to_string(_ID);
+        std::string passId = std::to_string(pPass->id());
+
+        _safePrint("Car " + carId + " loading Passenger " + passId);
         _carPassengers.push_back(pPass);
         pPass->load(&this->_boardHandle);
 
-        _safePrint("Car " + std::to_string(_ID) + " loaded Passenger " + std::to_string(pPass->id()) + " after " + 
-                    std::to_string(randTime) + " milliseconds!");
+        _safePrint("Car " + carId + " loaded Passenger " + passId + " after " + std::to_string(randTime) + " milliseconds!");
         std::this_thread::sleep_for(std::chrono::milliseconds(randTime));
 
         _totalPassengers++;
@@ -71,12 +73,13 @@ void RollerCoasterCar::_unloadPassengers()
     for (auto &pPass : _carPassengers)
     {
         int randTime = _generateRandomTime(_BASE_LOAD_TIME);
+        std::string carId = std::to_string(_ID);
+        std::string passId = std::to_string(pPass->id());
 
-        _safePrint("Car " + std::to_string(_ID) + " dropping Passenger " + std::to_string(pPass->id()));
+        _safePrint("Car " + carId + " dropping Passenger " + passId);
         pPass->unload();
 
-        _safePrint("Car " + std::to_string(_ID) + " unloaded Passenger " + std::to_string(pPass->id()) + " after " + 
-                    std::to_string(randTime) + " milliseconds!");
+        _safePrint("Car " + carId + " unloaded Passenger " + passId + " after " +  std::to_string(randTime) + " milliseconds!");
         std::this_thread::sleep_for(std::chrono::milliseconds(randTime));
     }
 
