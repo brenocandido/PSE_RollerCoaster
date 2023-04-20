@@ -47,10 +47,11 @@ const int RollerCoasterCar::id()
 
 void RollerCoasterCar::_loadPassengers()
 {
+    _safePrint("Car " + std::to_string(_ID) + " waiting for passengers!");
+
     while(_totalPassengers < _CAPACITY)
     {
         int randTime = _generateRandomTime(_BASE_LOAD_TIME);
-
         Passenger *pPass = _waitPassengerAvailable();
 
         _safePrint("Car " + std::to_string(_ID) + " loading Passenger " + std::to_string(pPass->id()));
@@ -85,8 +86,6 @@ void RollerCoasterCar::_unloadPassengers()
 Passenger *RollerCoasterCar::_waitPassengerAvailable()
 {
     Passenger *ret = nullptr;
-
-    _safePrint("Car " + std::to_string(_ID) + " waiting for passengers!");
 
     {
         std::unique_lock<std::mutex> lock(_muQueue);
