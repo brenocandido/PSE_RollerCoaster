@@ -89,20 +89,29 @@ void tryArguments(int argc, char *argv[], int &nPassengers, int &nCars, int &car
 
     if (argc == N_ARGS)
     {
+        validArgs = true;
+
         for (int i = 0; i < N_ARGS - 1; i++)
         {
             try
             {
                 // Must skip "./main" arg
-                args[i] = std::stoi(argv[i + 1]);
+                int arg = std::stoi(argv[i + 1]);
+
+                if (arg <= 0)
+                {
+                    validArgs = false;
+                    break;
+                }
+
+                args[i] = arg;
             }
             catch(const std::exception& e)
             {
+                validArgs = false;
                 break;
             }
         }
-
-        validArgs = true;
     }
 
     if (!validArgs)
