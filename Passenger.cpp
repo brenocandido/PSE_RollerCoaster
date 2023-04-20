@@ -28,8 +28,6 @@ void Passenger::thread()
 
         _waitCarUnassigned();
         _unboard();
-
-        _boardHandle = nullptr;
     }
 }
 
@@ -100,6 +98,7 @@ void Passenger::_unboard()
                 " after " + std::to_string(randTime) + " milliseconds!");
 
     _boardHandle->unboard();
+    _boardHandle = nullptr;
 }
 
 void Passenger::_safePrint(std::string msg)
