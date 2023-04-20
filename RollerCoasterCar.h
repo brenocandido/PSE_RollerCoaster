@@ -23,6 +23,7 @@ private:
     const int _ID;
     const int _CAPACITY;
     const int _BASE_RUN_TIME = 5000;
+    const int _BASE_LOAD_TIME = 1000;
 
     bool _riding;
     int _totalPassengers;
@@ -49,6 +50,8 @@ private:
     void _run();
 
     void _safePrint(std::string msg);
+
+    int _generateRandomTime(const int baseTime);
 };
 
 #endif // ROLLERCOASTERCAR_H_

@@ -27,14 +27,12 @@ void RollerCoasterCar::thread()
     while(true)
     {
         _loadPassengers();
-        // _waitAllBoarded();
         _boardHandle.waitAllBoarded(_totalPassengers);
 
         _run();
 
         _unloadPassengers();
         _boardHandle.waitAllUnboarded();
-        // _waitAllUnboarded();
 
         _safePrint("All passengers from Car " + std::to_string(_ID) + " unboarded!.");
         _totalPassengers = 0;
@@ -51,9 +49,18 @@ void RollerCoasterCar::_loadPassengers()
 {
     while(_totalPassengers < _CAPACITY)
     {
+        int randTime = _generateRandomTime(_BASE_LOAD_TIME);
+
         Passenger *pPass = _waitPassengerAvailable();
+
+        _safePrint("Car " + std::to_string(_ID) + " loading Passenger " + std::to_string(pPass->id()));
         _carPassengers.push_back(pPass);
         pPass->load(&this->_boardHandle);
+
+        _safePrint("Car " + std::to_string(_ID) + " loaded Passenger " + std::to_string(pPass->id()) + " after " + 
+                    std::to_string(randTime) + " milliseconds!");
+        std::this_thread::sleep_for(std::chrono::milliseconds(randTime));
+
         _totalPassengers++;
     }
 }
@@ -62,8 +69,14 @@ void RollerCoasterCar::_unloadPassengers()
 {
     for (auto &pPass : _carPassengers)
     {
+        int randTime = _generateRandomTime(_BASE_LOAD_TIME);
+
         _safePrint("Car " + std::to_string(_ID) + " dropping Passenger " + std::to_string(pPass->id()));
         pPass->unload();
+
+        _safePrint("Car " + std::to_string(_ID) + " unloaded Passenger " + std::to_string(pPass->id()) + " after " + 
+                    std::to_string(randTime) + " milliseconds!");
+        std::this_thread::sleep_for(std::chrono::milliseconds(randTime));
     }
 
     _carPassengers.clear();
@@ -90,8 +103,7 @@ Passenger *RollerCoasterCar::_waitPassengerAvailable()
 
 void RollerCoasterCar::_run()
 {
-    std::uniform_real_distribution<double> uFunc(0, 1);
-    int randTime = uFunc(_rng) * _BASE_RUN_TIME/2.0 + _BASE_RUN_TIME/2;
+    int randTime = _generateRandomTime(_BASE_RUN_TIME);
 
     _safePrint("Car " + std::to_string(_ID) + " running for " + std::to_string(randTime) + " milliseconds!");
     std::this_thread::sleep_for(std::chrono::milliseconds(randTime));
@@ -102,4 +114,12 @@ void RollerCoasterCar::_safePrint(std::string msg)
 {
     std::unique_lock<std::mutex> lock(_muTerminal);
     std::cout << msg << std::endl;
+}
+
+int RollerCoasterCar::_generateRandomTime(const int baseTime)
+{
+    std::uniform_real_distribution<double> uFunc(0, 1);
+    int randTime = uFunc(_rng) * baseTime/2.0 + baseTime/2;
+
+    return randTime;
 }
