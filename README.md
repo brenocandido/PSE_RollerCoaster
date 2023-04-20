@@ -1,6 +1,10 @@
 # PSE_RollerCoaster
 
+## Explanation
+
 This project intends to provide a solution to the Roller Coaster problem for multiple passengers and cars with multi-threading. This assumes each car has their own track, so all of them may run in parallel.
+
+## Compile & Run
 
 To compile the code, execute:
 ```
@@ -35,4 +39,8 @@ will both configure the application for 9 passengers and 2 cars with capacity fo
 
 If no arguments are passed or there are invalid values, the program will run with pre-configured amounts.
 
-Threads will run forever, so the any way to stop execution is to terminate the program. Ctrl+C should suffice.
+Threads will run forever, so the any way to stop execution is to terminate the program. Ctrl+C should suffice.  
+
+## Links
+
+[Github.](https://github.com/brenocandido/PSE_RollerCoaster)
